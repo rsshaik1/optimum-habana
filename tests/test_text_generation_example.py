@@ -90,6 +90,10 @@ if OH_DEVICE_CONTEXT not in ["gaudi1"]:
         "load_quantized_model_with_autoawq": [
             ("TheBloke/Llama-2-7b-Chat-AWQ", 1, 10, False, 128, 2048),
         ],
+        "load_quantized_model_with_bnb": [
+            ("hugging-quants/Meta-Llama-3.1-8B-BNB-NF4-BF16", 1, 1, False, 0, 20, True),
+            ("hugging-quants/Meta-Llama-3.1-70B-BNB-NF4-BF16", 1, 1, False, 0, 20, True),
+        ],
         "deepspeed": [
             pytest.param("bigscience/bloomz", 8, 1, marks=pytest.mark.x8),
             # pytest.param("meta-llama/Llama-2-70b-hf", 8, 1, marks=pytest.mark.x8),
@@ -141,6 +145,7 @@ else:
         "fp8": [],
         "load_quantized_model_with_autogptq": [],
         "load_quantized_model_with_autoawq": [],
+        "load_quantized_model_with_bnb": [],
         "deepspeed": [
             ("bigscience/bloomz-7b1", 8, 1),
         ],
@@ -166,6 +171,7 @@ def _test_text_generation(
     fp8: bool = False,
     load_quantized_model_with_autogptq: bool = False,
     load_quantized_model_with_autoawq: bool = False,
+    load_quantized_model_with_bnb: bool = False,
     max_input_tokens: int = 0,
     max_output_tokens: int = 100,
     parallel_strategy: str = None,
@@ -304,6 +310,8 @@ def _test_text_generation(
         command += ["--load_quantized_model_with_autogptq"]
     if load_quantized_model_with_autoawq:
         command += ["--load_quantized_model_with_autoawq"]
+    if load_quantized_model_with_bnb:
+        command += ["--load_quantized_model_with_bnb"]
     if parallel_strategy is not None:
         command += [
             f"--parallel_strategy={parallel_strategy}",
@@ -393,6 +401,7 @@ def _test_text_generation(
 
 @pytest.mark.parametrize("model_name, batch_size, reuse_cache, check_output", MODELS_TO_TEST["bf16_1x"])
 def test_text_generation_bf16_1x(
+
     model_name: str, batch_size: int, reuse_cache: bool, check_output: bool, baseline, token
 ):
     _test_text_generation(
@@ -493,6 +502,38 @@ def test_text_generation_awq(
         reuse_cache=reuse_cache,
         max_input_tokens=input_len,
         max_output_tokens=output_len,
+    )
+
+@pytest.mark.skipif(condition=bool("gaudi1" == OH_DEVICE_CONTEXT), reason=f"Skipping test for {OH_DEVICE_CONTEXT}")
+@pytest.mark.parametrize(
+    "model_name, world_size, batch_size, reuse_cache, input_len, output_len, check_output",
+    MODELS_TO_TEST["load_quantized_model_with_bnb"],
+)
+def test_text_generation_bnb(
+    model_name: str,
+    world_size: int,
+    batch_size: int,
+    reuse_cache: bool,
+    input_len: int,
+    output_len: int,
+    check_output: bool,
+    baseline,
+    token,
+):
+    _test_text_generation(
+        model_name,
+        baseline,
+        token,
+        deepspeed=False,
+        world_size=world_size,
+        torch_compile=True,
+        fp8=False,
+        load_quantized_model_with_bnb=True,
+        batch_size=batch_size,
+        reuse_cache=reuse_cache,
+        max_input_tokens=input_len,
+        max_output_tokens=output_len,
+        check_output=check_output,
     )
 
 
