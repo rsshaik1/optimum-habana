@@ -299,7 +299,7 @@ def setup_model(args, model_dtype, model_kwargs, logger):
         model = AutoModelForCausalLM.from_pretrained(
             args.model_name_or_path, torch_dtype=model_dtype, quantization_config=quantization_config, **model_kwargs
         )
-    elif args.load_quantized_model_with_bnb:
+    elif args.quantize_with_bnb:
         from transformers import BitsAndBytesConfig
 
         nf4_config = BitsAndBytesConfig(
@@ -310,7 +310,7 @@ def setup_model(args, model_dtype, model_kwargs, logger):
                         bnb_4bit_compute_dtype=torch.bfloat16,
                     )
         model = AutoModelForCausalLM.from_pretrained(
-            args.model_name_or_path, quantization_config=nf4_config, device_map={"": "hpu"},torch_dtype=model_dtype, **model_kwargs
+            args.model_name_or_path, quantization_config=nf4_config, device_map={"": "hpu"}, torch_dtype=model_dtype, **model_kwargs
         )
     elif args.load_quantized_model_with_inc:
         # TODO: This will be removed in v1.20 Synapse release

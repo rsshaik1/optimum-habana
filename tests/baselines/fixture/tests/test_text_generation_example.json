@@ -673,16 +673,28 @@
       "throughput": 94.70370546821054
     }
   },
-  "tests/test_text_generation_example.py::test_text_generation_bnb[hugging-quants/Meta-Llama-3.1-70B-BNB-NF4-BF16-1-1-False-0-20-True]": {
+  "tests/test_text_generation_example.py::test_text_generation_bnb[hugging-quants/Meta-Llama-3.1-70B-BNB-NF4-BF16-1-20-False-True]": {
     "gaudi2": {
       "output": "DeepSpeed is a machine learning framework that makes distributed training easy, efficient, and flexible. DeepSpeed can train BERT-Large on",
       "throughput": 0.75768781
     }
   },
-  "tests/test_text_generation_example.py::test_text_generation_bnb[hugging-quants/Meta-Llama-3.1-8B-BNB-NF4-BF16-1-1-False-0-20-True]": {
+  "tests/test_text_generation_example.py::test_text_generation_bnb[hugging-quants/Meta-Llama-3.1-8B-BNB-NF4-BF16-1-20-False-True]": {
     "gaudi2": {
       "output": "DeepSpeed is a machine learning framework that allows you to train large models efficiently and effectively. It is designed to be used with PyT",
       "throughput": 6.9570781
+    }
+  },
+  "tests/test_text_generation_example.py::test_text_generation_bnb[meta-llama/Llama-3.1-8B-1-20-True-True]": {
+    "gaudi2": {
+      "output": "DeepSpeed is a machine learning framework that allows you to train large models efficiently and effectively. It is designed to be used with PyT",
+      "throughput": 6.959140
+    }
+  },
+  "tests/test_text_generation_example.py::test_text_generation_bnb[meta-llama/Llama-3.1-70B-1-20-True-True]": {
+    "gaudi2": {
+      "output": "DeepSpeed is a machine learning framework that makes distributed training easy, efficient, and effective. It is a deep learning optimization library that makes",
+      "throughput": 0.7581772
     }
   }
 }
